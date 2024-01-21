@@ -9,9 +9,17 @@ export const siteConfig = {
       title: "Home",
       href: "/",
     },
+    {
+      title: "Vision",
+      href: "/about",
+    },
+    {
+      title: "Contact",
+      href: "/contact",
+    },
   ],
   links: {
     github: "https://github.com/Lucas8448/IdeaVault",
-    docs: "https://ui.shadcn.com",
+    docs: "https://github.com/Lucas8448/IdeaVault/blob/main/README.md",
   },
 }
