@@ -11,7 +11,7 @@ export const siteConfig = {
     },
     {
       title: "Vision",
-      href: "/about",
+      href: "/vision",
     },
     {
       title: "Contact",
