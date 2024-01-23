@@ -4,6 +4,7 @@ import {
   SunMedium,
   type Icon as LucideIcon,
 } from "lucide-react"
+import React from "react"
 
 export type Icon = LucideIcon
 
