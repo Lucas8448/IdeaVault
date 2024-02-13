@@ -9,6 +9,7 @@ import { SiteHeader } from "@/components/site-header"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Auth } from "@/components/context/Auth"
+import { Socket } from "@/components/context/Socket"
 
 export const metadata: Metadata = {
   title: {
@@ -42,15 +43,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
             fontSans.variable
           )}
         >
-        <Auth>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="relative flex flex-col min-h-screen">
-              <SiteHeader />
-              <div className="flex-1">{children}</div>
-            </div>
-            <TailwindIndicator />
-          </ThemeProvider>
-        </Auth>
+          <Socket>
+            <Auth>
+              <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                <div className="relative flex flex-col min-h-screen">
+                  <SiteHeader />
+                  <div className="flex-1">{children}</div>
+                </div>
+                <TailwindIndicator />
+              </ThemeProvider>
+            </Auth>
+          </Socket>
         </body>
       </html>
     </>
