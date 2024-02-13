@@ -13,6 +13,7 @@ export function SiteHeader() {
         <MainNav items={siteConfig.mainNav} />
         <div className="flex items-center justify-end flex-1 space-x-4">
           <nav className="flex items-center space-x-1">
+            <ThemeToggle />
             <Link
               href={siteConfig.links.github}
               target="_blank"
@@ -35,11 +36,10 @@ export function SiteHeader() {
                   variant: "ghost",
                 })}
               >
-                <Icons.docs className="w-5 h-5" />
+                <Icons.docs className="justify-center w-6 h-6 align-middle" />
                 <span className="sr-only">Docs</span>
               </div>
             </Link>
-            <ThemeToggle />
           </nav>
         </div>
       </div>
