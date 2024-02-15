@@ -55,7 +55,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
                     <SpeedInsights />
                   </div>
                 </div>
-                <TailwindIndicator />
               </ThemeProvider>
             </Auth>
           </Socket>
