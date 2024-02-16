@@ -29,7 +29,11 @@ export function SiteHeader() {
                 <span className="sr-only">GitHub</span>
               </div>
             </Link>
-            <Link href={siteConfig.links.docs}>
+            <Link 
+              href={siteConfig.links.docs}
+              target="_blank"
+              rel="noreferrer"
+            >
               <div
                 className={buttonVariants({
                   size: "icon",
