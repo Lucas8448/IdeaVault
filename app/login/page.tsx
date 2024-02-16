@@ -2,6 +2,15 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '@/components/context/Auth';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 
 const LoginPage = () => {
   const router = useRouter();
@@ -21,8 +30,22 @@ const LoginPage = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
-      <button onClick={() => handleLogin('google')} className="btn-google">Login with Google</button>
-      <button onClick={() => handleLogin('github')} className="btn-github">Login with GitHub</button>
+      <Card>
+        <CardHeader>
+          <CardTitle>Log In</CardTitle>
+          <CardDescription>Choose one of the providers to get started</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => handleLogin('google')} variant="secondary">
+            Log in with Google
+          </Button>
+        </CardContent>
+        <CardContent>
+          <Button onClick={() => handleLogin('github')} variant="secondary">
+            Log in with GitHub
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 };
