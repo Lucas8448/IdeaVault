@@ -6,10 +6,6 @@ export const siteConfig = {
     "Private collaborative brainstorming",
   mainNav: [
     {
-      title: "Home",
-      href: "/",
-    },
-    {
       title: "Vision",
       href: "/vision",
     },

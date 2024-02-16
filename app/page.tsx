@@ -2,7 +2,7 @@ import Link from "next/link"
 import React from "react"
 
 import { siteConfig } from "@/config/site"
-import { buttonVariants } from "@/components/ui/button"
+import { buttonVariants, Button } from "@/components/ui/button"
 
 export default function IndexPage() {
   return (
@@ -15,6 +15,9 @@ export default function IndexPage() {
         <p className="max-w-[700px] text-lg text-muted-foreground">
           The best solution for private brainstorming sessions. Express what you really feel!
         </p>
+        <Link href="/portal">
+          <Button className={buttonVariants({ variant: 'default' })}>Get Started</Button>
+        </Link>
       </div>
     </section>
   )
