@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 import React, { useEffect } from "react"
 import { useAuth } from "@/components/context/Auth"
 
-export default function Portal() {
+export default function Page() {
   const auth = useAuth()
   const router = useRouter()
   

@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { Icons } from "@/components/icons"
 
-export default function auth() {
+export default function Page() {
   return (
     <>
       <main className="flex items-center justify-center h-screen ">
