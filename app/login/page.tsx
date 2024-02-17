@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 
-const LoginPage = () => {
+export default function Page() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { loginWithGoogle, loginWithGithub } = useAuth();
@@ -49,5 +49,3 @@ const LoginPage = () => {
     </div>
   );
 };
-
-export default LoginPage;
