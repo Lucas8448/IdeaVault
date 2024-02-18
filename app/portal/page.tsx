@@ -1,18 +1,18 @@
 'use client'
 
 import { useRouter } from "next/navigation"
-import React, { useEffect } from "react"
+import React, { useMemo } from "react"
 import { useAuth } from "@/components/context/Auth"
 
 export default function Page() {
   const auth = useAuth()
   const router = useRouter()
   
-  useEffect(() => {
+  useMemo(() => {
     if (auth.currentUser == null) {
-      router.push('/login')
+      router.push('/login');
     }
-  })
+  }, [auth.currentUser, router]);
   
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
