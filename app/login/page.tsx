@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/icons"
 
 export default function Page() {
   const router = useRouter();
@@ -37,12 +38,12 @@ export default function Page() {
         </CardHeader>
         <CardContent>
           <Button onClick={() => handleLogin('google')} variant="secondary">
-            Log in with Google
+            Log in with Google <Icons.google className="w-5 h-5 ml-2"/>
           </Button>
         </CardContent>
         <CardContent>
           <Button onClick={() => handleLogin('github')} variant="secondary">
-            Log in with GitHub
+            Log in with GitHub <Icons.gitHub className="w-5 h-5 ml-2"/>
           </Button>
         </CardContent>
       </Card>
