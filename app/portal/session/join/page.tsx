@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation"
-import React, { useMemo } from "react"
+import React, { useEffect } from "react"
 import Link from "next/link"
 import { useAuth } from "@/components/context/Auth"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,7 @@ export default function Page() {
   const auth = useAuth()
   const router = useRouter()
   
-  useMemo(() => {
+  useEffect(() => {
     if (auth.currentUser == null) {
       router.push('/login');
     }
