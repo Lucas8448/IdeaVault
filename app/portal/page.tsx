@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from "next/navigation"
-import React, { useMemo } from "react"
+import React, { useEffect } from "react"
 import Link from "next/link"
 import { useAuth } from "@/components/context/Auth"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,7 @@ export default function Page() {
   const auth = useAuth()
   const router = useRouter()
   
-  useMemo(() => {
+  useEffect(() => {
     if (auth.currentUser == null) {
       router.push('/login');
     }
@@ -30,7 +30,7 @@ export default function Page() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           Welcome, {auth.currentUser && auth.currentUser.displayName}
         </h1>
-        <Card className="mx-2 my-2">
+        <Card className="m-2">
           <CardHeader>
             <CardTitle>Get started</CardTitle>
           </CardHeader>
