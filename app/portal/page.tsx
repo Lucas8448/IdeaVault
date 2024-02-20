@@ -30,7 +30,7 @@ export default function Page() {
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
           Welcome, {auth.currentUser && auth.currentUser.displayName}
         </h1>
-        <Card className="mx-2 my-2">
+        <Card className="m-2">
           <CardHeader>
             <CardTitle>Get started</CardTitle>
           </CardHeader>
