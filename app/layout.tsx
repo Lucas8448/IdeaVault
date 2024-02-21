@@ -10,7 +10,6 @@ import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from '@vercel/analytics/react';
-import { Auth } from "@/components/context/Auth"
 import { Socket } from "@/components/context/Socket"
 
 export const metadata: Metadata = {
