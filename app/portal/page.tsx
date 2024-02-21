@@ -1,9 +1,6 @@
-'use client'
-
-import { useRouter } from "next/navigation"
-import React, { useEffect } from "react"
+import { currentUser } from '@clerk/nextjs'
+import React from "react"
 import Link from "next/link"
-import { useAuth } from "@/components/context/Auth"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -14,21 +11,13 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-export default function Page() {
-  const auth = useAuth()
-  const router = useRouter()
-  
-  useEffect(() => {
-    if (auth.currentUser == null) {
-      router.push('/login');
-    }
-  }, [auth.currentUser, router]);
-  
+export default async function Page() {
+  const user = await currentUser()
   return (
     <section className="container grid items-center gap-6 pt-6 pb-8 md:py-10">
       <div className="flex flex-col items-start gap-2">
         <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Welcome, {auth.currentUser && auth.currentUser.displayName}
+          Welcome, {user?.firstName}
         </h1>
         <Card className="m-2">
           <CardHeader>

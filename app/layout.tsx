@@ -1,6 +1,7 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
 import React from "react"
+import { ClerkProvider } from '@clerk/nextjs'
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -36,16 +37,16 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
-        <head />
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <Socket>
-            <Auth>
+    <ClerkProvider>
+        <html lang="en" suppressHydrationWarning>
+          <head />
+          <body
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased",
+              fontSans.variable
+            )}
+          >
+            <Socket>
               <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <div className="relative flex flex-col min-h-screen">
                   <SiteHeader />
@@ -55,11 +56,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </div>
                 </div>
               </ThemeProvider>
-            </Auth>
-          </Socket>
-          
-        </body>
-      </html>
+            </Socket>
+          </body>
+        </html>
+      </ClerkProvider>
     </>
   )
 }
