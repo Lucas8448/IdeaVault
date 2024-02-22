@@ -2,6 +2,7 @@ import "@/styles/globals.css"
 import { Metadata } from "next"
 import React from "react"
 import { ClerkProvider } from '@clerk/nextjs'
+import {dark} from "@clerk/themes";
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -36,7 +37,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-    <ClerkProvider>
+      <ClerkProvider appearance={dark}>
         <html lang="en" suppressHydrationWarning>
           <head />
           <body
