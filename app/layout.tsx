@@ -1,6 +1,7 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
 import React from "react"
+import { ClerkProvider } from '@clerk/nextjs'
 
 import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
@@ -9,7 +10,6 @@ import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from '@vercel/analytics/react';
-import { Auth } from "@/components/context/Auth"
 import { Socket } from "@/components/context/Socket"
 
 export const metadata: Metadata = {
@@ -36,16 +36,16 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
-        <head />
-        <body
-          className={cn(
-            "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
-          <Socket>
-            <Auth>
+      <ClerkProvider>
+        <html lang="en" suppressHydrationWarning>
+          <head />
+          <body
+            className={cn(
+              "min-h-screen bg-background font-sans antialiased",
+              fontSans.variable
+            )}
+          >
+            <Socket>
               <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <div className="relative flex flex-col min-h-screen">
                   <SiteHeader />
@@ -55,11 +55,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </div>
                 </div>
               </ThemeProvider>
-            </Auth>
-          </Socket>
-          
-        </body>
-      </html>
+            </Socket>
+          </body>
+        </html>
+      </ClerkProvider>
     </>
   )
 }
