@@ -2,7 +2,7 @@
 
 import { OrganizationList } from "@clerk/nextjs";
 
-export default async function Page() {
+export default function Page() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <OrganizationList
