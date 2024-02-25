@@ -1,68 +1,91 @@
 'use client'
 
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, FC } from 'react';
 
-type WebSocketContextType = {
+interface WebSocketContextType {
   sendMessage: (message: string) => void;
+  closeConnection: () => void;
   message: string;
   isConnected: boolean;
 }
 
-type WebSocketProviderProps = {
+interface WebSocketProviderProps {
   children: React.ReactNode;
 }
 
 const WebSocketContext = createContext<WebSocketContextType | undefined>(undefined);
 
-const WS_SERVER_URL = 'wss://your-websocket-server.com';
+const WS_SERVER_URL = 'ws://localhost:3001';
 
-export const Socket: React.FC<WebSocketProviderProps> = ({ children }) => {
+const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
-  const [message, setMessage] = useState('');
-  const [isConnected, setIsConnected] = useState(false);
+  const [message, setMessage] = useState<string>('');
+  const [isConnected, setIsConnected] = useState<boolean>(false);
 
   useEffect(() => {
     const ws = new WebSocket(WS_SERVER_URL);
 
+    const closeConnection = () => {
+      ws.close();
+    };
+
     ws.onopen = () => {
-      console.log('WebSocket connected');
-      setIsConnected(true);
+      ws.send(JSON.stringify({ type: 'INITIATE_CONNECTION' }));
+      ws.onmessage = (event) => {
+        if (typeof event.data === 'string') {
+          const { type, payload } = JSON.parse(event.data);
+          if (type === 'CONNECTION_ESTABLISHED') {
+            console.log('Connection established', payload.content);
+            setIsConnected(true);
+          }
+        }
+      }
     };
 
     ws.onmessage = (event) => {
-      console.log('Message from server ', event.data);
-      setMessage(event.data);
+      if (typeof event.data === 'string') {
+        const { type, payload } = JSON.parse(event.data);
+        setMessage(payload.content);
+      }
+      console.log('Message received', event);
     };
 
     ws.onclose = () => {
-      console.log('WebSocket disconnected');
       setIsConnected(false);
+    };
+
+    ws.onerror = () => {
+      closeConnection();
     };
 
     setWebSocket(ws);
 
     return () => {
-      ws.close();
+      closeConnection();
     };
   }, []);
 
-  const sendMessage = (message: string) => {
-    if (webSocket) {
-      webSocket.send(message);
+  const sendMessage = useCallback((content: string) => {
+    if (webSocket && webSocket.readyState === WebSocket.OPEN) {
+      webSocket.send(JSON.stringify({ type: 'SEND', payload: { content } }));
     }
-  };
+  }, [webSocket]);
+
+  const value = { sendMessage, closeConnection: () => webSocket?.close(), message, isConnected };
 
   return (
-    <WebSocketContext.Provider value={{ sendMessage, message, isConnected }}>
+    <WebSocketContext.Provider value={value}>
       {children}
     </WebSocketContext.Provider>
   );
 };
 
-export const useWebSocket = () => {
+const useWebSocket = (): WebSocketContextType => {
   const context = useContext(WebSocketContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useWebSocket must be used within a WebSocketProvider');
   }
   return context;
 };
+
+export { WebSocketProvider, useWebSocket };

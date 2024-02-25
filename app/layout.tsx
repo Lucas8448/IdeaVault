@@ -10,7 +10,7 @@ import { SiteHeader } from "@/components/site-header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Analytics } from '@vercel/analytics/react';
-import { Socket } from "@/components/context/Socket"
+import { WebSocketProvider } from "@/components/context/Socket"
 
 export const metadata: Metadata = {
   title: {
@@ -45,7 +45,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
               fontSans.variable
             )}
           >
-            <Socket>
+            <WebSocketProvider>
               <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <div className="relative flex flex-col min-h-screen">
                   <SiteHeader />
@@ -55,7 +55,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
                   </div>
                 </div>
               </ThemeProvider>
-            </Socket>
+            </WebSocketProvider>
           </body>
         </html>
       </ClerkProvider>
