@@ -1,6 +1,8 @@
 'use client'
 
 import React, { createContext, useContext, useEffect, useState, useCallback, FC } from 'react';
+import { useAuth } from "@clerk/nextjs";
+import NodeRSA from 'node-rsa'
 
 interface WebSocketContextType {
   sendMessage: (message: string) => void;
@@ -18,9 +20,11 @@ const WebSocketContext = createContext<WebSocketContextType | undefined>(undefin
 const WS_SERVER_URL = 'ws://localhost:3001';
 
 const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
+  const { isLoaded, userId, getToken } = useAuth();
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
+  const key = new NodeRSA()
 
   useEffect(() => {
     const ws = new WebSocket(WS_SERVER_URL);
@@ -35,8 +39,18 @@ const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
         if (typeof event.data === 'string') {
           const { type, payload } = JSON.parse(event.data);
           if (type === 'CONNECTION_ESTABLISHED') {
-            console.log('Connection established', payload.content);
             setIsConnected(true);
+            ws.send(JSON.stringify({ type: 'GET_PUBLIC_KEY' }));
+            ws.onmessage = (event) => {
+              if (typeof event.data === 'string') {
+                const { type, payload } = JSON.parse(event.data);
+                if (type === 'PUBLIC_KEY') {
+                  console.log('Public key received', payload.key);
+                  key.importKey(payload.key, 'pkcs8-public');
+                  ws.send(JSON.stringify({ type: 'TEST', payload: key.encrypt("test", 'base64'), encrypted: true }));
+                }
+              }
+            }
           }
         }
       }
@@ -66,8 +80,12 @@ const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
   }, []);
 
   const sendMessage = useCallback((content: string) => {
+    let id = null;
+    if (userId){
+      id = key.encrypt(userId, 'utf8');
+    }
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify({ type: 'SEND', payload: { content } }));
+      webSocket.send(JSON.stringify({ type: 'SEND', payload: { content, ...(id ? { id } : {}) } }));
     }
   }, [webSocket]);
 
