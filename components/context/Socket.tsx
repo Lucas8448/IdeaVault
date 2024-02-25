@@ -1,11 +1,11 @@
-'use client'
+"use client"
 
 import React, { createContext, useContext, useEffect, useState, useCallback, FC } from 'react';
 import { useAuth } from "@clerk/nextjs";
-import NodeRSA from 'node-rsa'
+import NodeRSA from 'node-rsa';
 
 interface WebSocketContextType {
-  sendMessage: (message: string) => void;
+  sendMessage: (type: string, message: string) => void;
   closeConnection: () => void;
   message: string;
   isConnected: boolean;
@@ -24,44 +24,38 @@ const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
   const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
   const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const key = new NodeRSA()
+  const [key, setKey] = useState<NodeRSA | null>(null);
 
   useEffect(() => {
     const ws = new WebSocket(WS_SERVER_URL);
 
-    const closeConnection = () => {
-      ws.close();
-    };
-
     ws.onopen = () => {
       ws.send(JSON.stringify({ type: 'INITIATE_CONNECTION' }));
-      ws.onmessage = (event) => {
-        if (typeof event.data === 'string') {
-          const { type, payload } = JSON.parse(event.data);
-          if (type === 'CONNECTION_ESTABLISHED') {
-            setIsConnected(true);
-            ws.send(JSON.stringify({ type: 'GET_PUBLIC_KEY' }));
-            ws.onmessage = (event) => {
-              if (typeof event.data === 'string') {
-                const { type, payload } = JSON.parse(event.data);
-                if (type === 'PUBLIC_KEY') {
-                  console.log('Public key received', payload.key);
-                  key.importKey(payload.key, 'pkcs8-public');
-                  ws.send(JSON.stringify({ type: 'TEST', payload: key.encrypt("test", 'base64'), encrypted: true }));
-                }
-              }
-            }
-          }
-        }
-      }
     };
 
     ws.onmessage = (event) => {
       if (typeof event.data === 'string') {
         const { type, payload } = JSON.parse(event.data);
-        setMessage(payload.content);
+
+        switch (type) {
+          case 'CONNECTION_ESTABLISHED':
+            setIsConnected(true);
+            ws.send(JSON.stringify({ type: 'GET_PUBLIC_KEY' }));
+            break;
+          case 'PUBLIC_KEY':
+            const newKey = new NodeRSA();
+            console.log('Public key received', payload.key);
+            newKey.importKey(payload.key, 'pkcs8-public');
+            setKey(newKey);
+            break;
+          case 'MESSAGE':
+            setMessage(payload.content);
+            console.log('Message received', payload.content);
+            break;
+          default:
+            console.log('Unhandled message type:', type);
+        }
       }
-      console.log('Message received', event);
     };
 
     ws.onclose = () => {
@@ -69,25 +63,27 @@ const WebSocketProvider: FC<WebSocketProviderProps> = ({ children }) => {
     };
 
     ws.onerror = () => {
-      closeConnection();
+      ws.close();
     };
 
     setWebSocket(ws);
 
     return () => {
-      closeConnection();
+      ws.close();
     };
   }, []);
 
-  const sendMessage = useCallback((content: string) => {
-    let id = null;
-    if (userId){
-      id = key.encrypt(userId, 'utf8');
-    }
+    const sendMessage = useCallback((type: string, payload: any) => {
     if (webSocket && webSocket.readyState === WebSocket.OPEN) {
-      webSocket.send(JSON.stringify({ type: 'SEND', payload: { content, ...(id ? { id } : {}) } }));
+      const message = { type, payload };
+      if (key && ['SEND_IDEA', 'CREATE_ROOM', 'JOIN_ROOM'].includes(type)) {
+        message.payload = key.encrypt(JSON.stringify(payload), 'base64');
+      }
+      webSocket.send(JSON.stringify(message));
+    } else {
+      console.error('Unable to send message. WebSocket is not ready.');
     }
-  }, [webSocket]);
+  }, [webSocket, key]);
 
   const value = { sendMessage, closeConnection: () => webSocket?.close(), message, isConnected };
 

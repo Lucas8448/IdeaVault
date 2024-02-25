@@ -3,20 +3,18 @@
 import React, { useState } from 'react';
 import { useWebSocket } from '@/components/context/Socket';
 
-const NewPage = () => {
+const JoinPage = () => {
   const { sendMessage } = useWebSocket();
   const [room, setRoom] = useState('');
   const [password, setPassword] = useState('');
 
-  const createRoom = () => {
-    sendMessage('CREATE_ROOM', JSON.stringify({ room, password }));
-    setRoom('');
-    setPassword('');
+  const joinRoom = () => {
+    sendMessage('JOIN_ROOM', JSON.stringify({ room, password }));
   };
 
   return (
     <div>
-      <h1>Create a Brainstorming Session</h1>
+      <h1>Join a Brainstorming Session</h1>
       <input
         type="text"
         placeholder="Room Name"
@@ -25,18 +23,13 @@ const NewPage = () => {
       />
       <input
         type="password"
-        placeholder="Set a Room Password"
+        placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button onClick={createRoom}>Create Room</button>
-      {room && (
-        <p>Room {room} created. Share this room name and password with participants.</p>
-      )}
+      <button onClick={joinRoom}>Join Room</button>
     </div>
   );
 };
 
-export default NewPage;
-
-
+export default JoinPage;
